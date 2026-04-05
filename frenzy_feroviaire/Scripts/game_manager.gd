@@ -3,7 +3,15 @@ extends Node2D
 @onready var tilemap = $"../TileMap"
 @onready var objects_container = $"../obj_container"
 
-var tree_scene = preload("res://scenes/tree.tscn")
+var tree_scenes = [
+	preload("res://scenes/tree_1.tscn"),
+	preload("res://scenes/tree_2.tscn"),
+	preload("res://scenes/tree_3.tscn"),
+	preload("res://scenes/tree_4.tscn"),
+	preload("res://scenes/tree_5.tscn")
+]
+
+var tree_scene = preload("res://scenes/tree_2.tscn")
 
 const SOURCE_ID = 0 # ID de ton atlas (à adapter)
 const TILE_FOREST = Vector2i(1, 0) # coord de la tile forêt (à adapter)
@@ -21,9 +29,14 @@ func spawn_trees():
 			spawn_tree(cell)
 
 func spawn_tree(cell: Vector2i):
+	var tree_scene = tree_scenes.pick_random()
 	var tree = tree_scene.instantiate()
-
+	
+	# hauteur du sprite
+	var sprite = tree.get_node("Sprite2D")
+	var height = sprite.texture.get_height()
+	
 	# position centrée sur la tile
-	tree.position = tilemap.map_to_local(cell)+Vector2(0,-8)
+	tree.position = tilemap.map_to_local(cell) - Vector2(0, height / 3)
 
 	objects_container.add_child(tree)

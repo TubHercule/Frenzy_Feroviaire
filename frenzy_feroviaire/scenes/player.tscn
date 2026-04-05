@@ -1,12 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://b6qb1cet76kn1"]
+[gd_scene load_steps=5 format=3 uid="uid://b6qb1cet76kn1"]
 
 [ext_resource type="Texture2D" uid="uid://ddjexd67r8bpq" path="res://random_character.png" id="1_4flbx"]
-[ext_resource type="Script" uid="uid://bjd4gl4xlcosn" path="res://character_body_2d.gd" id="2_onrkg"]
+[ext_resource type="Script" uid="uid://bjd4gl4xlcosn" path="res://Scripts/player.gd" id="2_onrkg"]
+[ext_resource type="PackedScene" uid="uid://caemyyj5dpqpa" path="res://scenes/inventory.tscn" id="3_qhqgy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4flbx"]
 radius = 7.0
 
 [node name="Player" type="Node2D"]
+y_sort_enabled = true
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 script = ExtResource("2_onrkg")
@@ -18,3 +20,5 @@ shape = SubResource("CircleShape2D_4flbx")
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
 position = Vector2(2, 0)
 texture = ExtResource("1_4flbx")
+
+[node name="Inventory" parent="." instance=ExtResource("3_qhqgy")]

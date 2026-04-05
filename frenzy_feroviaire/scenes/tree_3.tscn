@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://bkonhqivn616x"]
+
+[ext_resource type="Script" uid="uid://c4tbav0dytoga" path="res://Scripts/chopable_tree.gd" id="1_57mgp"]
+[ext_resource type="Texture2D" uid="uid://vy4sd5hu0l6s" path="res://Arbre3.png" id="2_tmiux"]
+[ext_resource type="Script" uid="uid://clfu0v8ejrxvg" path="res://Scripts/decor.gd" id="3_27jge"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0b1i4"]
+size = Vector2(25, 24)
+
+[node name="Tree_3" type="Node2D" node_paths=PackedStringArray("decor_sprite")]
+script = ExtResource("1_57mgp")
+decor_sprite = NodePath("Sprite2D")
+metadata/_custom_type_script = "uid://c4tbav0dytoga"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 1)
+texture = ExtResource("2_tmiux")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 29)
+shape = SubResource("RectangleShape2D_0b1i4")
+
+[node name="Decor" type="Node2D" parent="."]
+script = ExtResource("3_27jge")
+metadata/_custom_type_script = "uid://clfu0v8ejrxvg"
