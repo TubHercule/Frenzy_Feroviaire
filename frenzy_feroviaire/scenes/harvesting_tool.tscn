@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bct0ev074mhgk"]
+
+[ext_resource type="Script" uid="uid://st1lqffc7mo5" path="res://Scripts/tool.gd" id="1_i1yex"]
+[ext_resource type="Texture2D" uid="uid://ban6314i4bawg" path="res://basic_axe.png" id="2_254ko"]
+
+[node name="Harvesting_Tool" type="Node2D"]
+script = ExtResource("1_i1yex")
+type = 3
+metadata/_custom_type_script = "uid://st1lqffc7mo5"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_254ko")

@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://btb7hqfsae854"]
+
+[node name="Displayed_Inventory" type="Node2D"]
+
+[node name="Items_Container" type="Node2D" parent="."]

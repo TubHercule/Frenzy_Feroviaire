@@ -1,7 +1,30 @@
 extends Node2D
-
 @onready var tilemap = $"../TileMap"
 @onready var objects_container = $"../obj_container"
+
+var objects_map : Dictionary = {}
+# key = Vector2i (cell)
+# value = Array d’objets présents sur la tile
+
+func add_object(cell: Vector2i, obj : Item):
+	if not objects_map.has(cell):
+		objects_map[cell] = []
+	
+	objects_map[cell].append(obj)
+
+
+func remove_object(cell: Vector2i, obj : Item):
+	if not objects_map.has(cell):
+		return
+	
+	objects_map[cell].erase(obj)
+	
+	if objects_map[cell].is_empty():
+		objects_map.erase(cell)
+		
+
+# MAP GENERATION
+#-------------------
 
 var tree_scenes = [
 	preload("res://scenes/tree_1.tscn"),
@@ -31,11 +54,11 @@ func spawn_trees():
 func spawn_tree(cell: Vector2i):
 	var tree_scene = tree_scenes.pick_random()
 	var tree = tree_scene.instantiate()
-	
 	# hauteur du sprite
 	var sprite = tree.get_node("Sprite2D")
 	var height = sprite.texture.get_height()
 	
+	tree.cell = cell
 	# position centrée sur la tile
 	tree.position = tilemap.map_to_local(cell) - Vector2(0, height / 3)
 

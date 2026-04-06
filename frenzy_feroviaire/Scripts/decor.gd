@@ -5,8 +5,11 @@ class_name Decor
 @export var decor_name = "";
 @export var hurtbox = Area2D;
 @export var decor_sprite = Sprite2D;
+@export var dropped_item : Item;
 
 var health
+var cell : Vector2i
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	y_sort_enabled = true
@@ -16,3 +19,4 @@ func take_damage(damage : int) -> void :
 	health -= damage
 	if health <= 0:
 		queue_free()
+		Game_Manager.add_object(cell, dropped_item)
