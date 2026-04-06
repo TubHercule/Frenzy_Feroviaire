@@ -8,20 +8,21 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_4flbx"]
 radius = 7.0
 
-[node name="Player" type="Node2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("inventory")]
 y_sort_enabled = true
-
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 script = ExtResource("2_onrkg")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-position = Vector2(0, 14)
-shape = SubResource("CircleShape2D_4flbx")
-
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
-position = Vector2(2, 0)
-texture = ExtResource("1_4flbx")
+inventory = NodePath("Inventory")
 
 [node name="Inventory" parent="." instance=ExtResource("3_qhqgy")]
 
 [node name="Displayed_Inventory" parent="." instance=ExtResource("4_dqkch")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 14)
+shape = SubResource("CircleShape2D_4flbx")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-14, 14)
+texture = ExtResource("1_4flbx")
+centered = false
+offset = Vector2(0, -32)

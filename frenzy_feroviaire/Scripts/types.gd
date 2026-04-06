@@ -1,4 +1,5 @@
-class_name Types
+extends Node
+#class_name Types
 
 enum CarryType {
 	NONE,
@@ -11,5 +12,5 @@ enum CarryType {
 static func is_tool(type : CarryType):
 	return type in [CarryType.AXE, CarryType.PICKAXE]
 
-func is_resource(type : CarryType):
+static func is_resource(type : CarryType):
 	return type in [CarryType.WOOD, CarryType.STONE]
