@@ -20,7 +20,15 @@ var stackable_items_scenes = {
 	Types.CarryType.WOOD : preload("res://scenes/wood.tscn")
 }
 
-func add_object(cell: Vector2i, type : Types.CarryType, nb : int):
+# create a cell if cell is not refferenced in objects_map
+"""func get_cell(cell):
+	if Game_Manager.objects_map[cell].has(cell):
+		return Game_Manager.objects_map[cell]
+	else:
+		
+		return Game_Manager.objects_map[cell]"""
+		
+func add_object(cell: Vector2i, type : Types.CarryType, nb : int) -> int:
 	if not objects_map.has(cell):
 		var Cell_Obj_Container = Cell_Obj_Container_Scene.instantiate()
 		objects_map[cell] = Cell_Obj_Container
@@ -28,10 +36,12 @@ func add_object(cell: Vector2i, type : Types.CarryType, nb : int):
 		Cell_Obj_Container.position = tilemap.map_to_local(cell)
 		objects_container.add_child(Cell_Obj_Container)
 	else:
-		if type != objects_map[cell]:
+		if type != objects_map[cell].type:
 			print("ATTENTION : types différents sur la même tuile")
-			
-	objects_map[cell].add_items(nb)
+			return nb 
+	var dif = objects_map[cell].add_items(nb)
+	print("dif : ",dif)
+	return dif
 
 
 func remove_object(cell: Vector2i, type : Types.CarryType, nb : int):
@@ -39,6 +49,7 @@ func remove_object(cell: Vector2i, type : Types.CarryType, nb : int):
 		return
 	if type != objects_map[cell].type:
 		print("ATTENTION : types différents sur la même tuile")
+	print("rm obj")
 	objects_map[cell].add_items(-nb)
 	
 	if objects_map[cell].nb <= 0:
@@ -68,7 +79,7 @@ func spawn_all():
 		if atlas_coords == TILE_FOREST:
 			spawn_tree(cell)
 		if atlas_coords == TILE_PLAIN:
-			add_object(cell, Types.CarryType.WOOD, 1)
+			add_object(cell, Types.CarryType.WOOD, 2)
 
 """func spawn_item(cell: Vector2i, item_scene_id : Types.CarryType, nb : int):
 	var Stackable_Item = stackable_items_scenes[item_scene_id].instantiate()

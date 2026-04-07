@@ -47,10 +47,18 @@ func take_items(cell : Vector2i):
 	print(carry_type)
 	print(amount)
 
-func drop_items(item : Item):
-	if carry_type != Types.CarryType.NONE:
+func drop_items(cell : Vector2i):
+	var dif = Game_Manager.add_object(cell, carry_type, amount)
+	print("dif : ",dif)
+	if dif == 0:
 		carry_type = Types.CarryType.NONE
 		amount = 0
+	if dif > 0: #la case a un exes
+		amount = dif
+	print("inv : ",amount)
+	
+	
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
