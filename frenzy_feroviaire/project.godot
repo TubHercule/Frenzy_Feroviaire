@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="Frenzy_Feroviaire"
-run/main_scene="uid://b225s0d0n6mil"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="res://scenes/scene.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]

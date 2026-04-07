@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bj7b6a1pa6oqy"]
+
+[ext_resource type="Script" path="res://Scripts/cell_obj_container.gd" id="1_77jyy"]
+
+[node name="Cell_Obj_Container" type="Node2D"]
+script = ExtResource("1_77jyy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]

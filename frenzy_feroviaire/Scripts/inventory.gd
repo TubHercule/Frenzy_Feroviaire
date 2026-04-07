@@ -10,10 +10,12 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 func take_items(cell : Vector2i):
-	var cell_item : Cell_Obj
+	var cell_item : Cell_Obj_Container
 	print(cell)
 	if Game_Manager.objects_map.has(cell):
 		cell_item = Game_Manager.objects_map[cell]
+	else:
+		return
 		
 	if carry_type == Types.CarryType.NONE:
 		carry_type = cell_item.type
@@ -29,9 +31,8 @@ func take_items(cell : Vector2i):
 	else:
 		print("Incompatible item")
 		return
-	
-		
-		
+
+
 	"""for item in items:
 		if carry_type != Types.CarryType.NONE:
 			carry_type  = item.type
