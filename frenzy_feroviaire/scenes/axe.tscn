@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://mgctur3n84vx"]
+
+[ext_resource type="Script" uid="uid://st1lqffc7mo5" path="res://Scripts/tool.gd" id="1_02eny"]
+[ext_resource type="Texture2D" uid="uid://b8bi5buv2p7ok" path="res://Hache.png" id="2_p8nqp"]
+
+[node name="Axe" type="Node2D"]
+script = ExtResource("1_02eny")
+can_destroy = Array[int]([1])
+type = 3
+metadata/_custom_type_script = "uid://st1lqffc7mo5"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_p8nqp")

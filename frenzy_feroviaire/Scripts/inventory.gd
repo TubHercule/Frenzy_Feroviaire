@@ -1,61 +1,56 @@
 extends Node2D
 class_name Inventory
 
-var carry_type : Types.CarryType = Types.CarryType.NONE
-var amount : int = 0
-var max_amount : int = 5
+#var carry_type : Types.CarryType = Types.CarryType.NONE
+#var amount : int = 0
+#var max_amount : int = 5
+var cell_obj_container : Cell_Obj_Container 
+var capacity : int = 5
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	pass
+
+func player_full() -> bool:
+	if cell_obj_container != null:
+		return cell_obj_container.is_full()
+	else:
+		return false
 
 func take_items(cell : Vector2i):
-	var cell_item : Cell_Obj_Container
-	print(cell)
-	if Game_Manager.objects_map.has(cell):
-		cell_item = Game_Manager.objects_map[cell]
-	else:
-		return
-		
-	if carry_type == Types.CarryType.NONE:
-		carry_type = cell_item.type
-		
-	if  carry_type == cell_item.type:
-		if Types.is_tool(cell_item.type) and amount == 0:
-			amount += 1
-			Game_Manager.remove_object(cell, cell_item.type, 1)
-		elif Types.is_resource(cell_item.type):
-			var amount_taken = min(max_amount - amount, cell_item.nb)
-			amount += amount_taken
-			Game_Manager.remove_object(cell, cell_item.type, amount_taken)
-	else:
-		print("Incompatible item")
-		return
-
-
-	"""for item in items:
-		if carry_type != Types.CarryType.NONE:
-			carry_type  = item.type
-			items.append(item)
-			Game_Manager.remove_object(cell, item)
-			is_tool = Types.is_tool(item.type)
-		elif items.size() < max_amount and item.type == carry_type:
-			items.append(item)
-			Game_Manager.remove_object(cell, item)
+	if not player_full():
+		var cell_item : Cell_Obj_Container
+		print(cell)
+		if Game_Manager.objects_map.has(cell):
+			cell_item = Game_Manager.objects_map[cell]
 		else:
-			print("items full!")"""
-	print(carry_type)
-	print(amount)
+			return
+		
+		if cell_obj_container == null: #inventaire vide
+			cell_obj_container = Game_Manager.instantiate_container(cell_item.type, capacity)
+			
+		if cell_obj_container.type == cell_item.type:
+			#if Types.is_resource(cell_obj_container.type):
+			var dif = cell_obj_container.add_items(cell_item.nb)
+			print("nb_max : ",cell_obj_container.max_nb)
+			Game_Manager.remove_object(cell, cell_item.type, cell_item.nb-dif)
+			#elif Types.is_tool(cell_obj_container.type):
+		else:
+			print("Incompatible item")
+			return
+
+		print(cell_obj_container.type)
+		print(cell_obj_container.nb)
 
 func drop_items(cell : Vector2i):
-	var dif = Game_Manager.add_object(cell, carry_type, amount)
+	var dif = Game_Manager.add_object(cell, cell_obj_container.type, cell_obj_container.nb)
 	print("dif : ",dif)
 	if dif == 0:
-		carry_type = Types.CarryType.NONE
-		amount = 0
+		cell_obj_container.queue_free()
+		cell_obj_container = null
 	if dif > 0: #la case a un exes
-		amount = dif
-	print("inv : ",amount)
+		cell_obj_container.nb = dif
+		print("inv : ",cell_obj_container.nb)
 	
 	
 	

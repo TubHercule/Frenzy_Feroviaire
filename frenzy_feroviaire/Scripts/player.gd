@@ -5,7 +5,10 @@ extends CharacterBody2D
 const SPEED = 300.0
 const ACCELERATION = 100
 const JUMP_VELOCITY = -400.0
+var target_range : int = 16
+var direction := Vector2.ZERO
 
+	
 func _ready() -> void:
 	add_to_group("players")
 
@@ -16,9 +19,10 @@ func _physics_process(delta: float) -> void:
 		else:
 			try_drop()
 			
-	var direction := Input.get_vector("left", "right", "up","down")
+	direction = Input.get_vector("left", "right", "up","down")
 	velocity.x = move_toward(velocity.x, direction.x * SPEED, ACCELERATION)
 	velocity.y = move_toward(velocity.y, direction.y * SPEED, ACCELERATION)
+	update_interaction_point()
 
 	move_and_slide()
 
@@ -31,4 +35,25 @@ func try_drop():
 	inventory.drop_items(cell)
 	
 func get_carry_type() -> Types.CarryType:
-	return inventory.carry_type
+	if inventory.cell_obj_container != null:
+		return inventory.cell_obj_container.type
+	else:
+		return Types.CarryType.NONE
+
+func update_interaction_point():
+	var offset = Vector2.ZERO
+
+	if direction.x > 0:
+		offset = Vector2(target_range, 0)
+	elif direction.x < 0:
+		offset = Vector2(-target_range, 0)
+	elif direction.y > 0:
+		offset = Vector2(0, target_range)
+	elif direction.y < 0:
+		offset = Vector2(0, -target_range)
+	$target.position = offset
+
+func _on_target_body_entered(body: Node2D) -> void:
+	var entity = body.get_parent()
+	#if Types.is_tool(inventory.carry_type):
+		

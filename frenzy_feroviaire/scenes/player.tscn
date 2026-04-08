@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://b6qb1cet76kn1"]
+[gd_scene load_steps=7 format=3 uid="uid://b6qb1cet76kn1"]
 
 [ext_resource type="Texture2D" uid="uid://ddjexd67r8bpq" path="res://random_character.png" id="1_4flbx"]
 [ext_resource type="Script" uid="uid://bjd4gl4xlcosn" path="res://Scripts/player.gd" id="2_onrkg"]
@@ -7,6 +7,9 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4flbx"]
 radius = 7.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
+radius = 1.0
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("inventory")]
 y_sort_enabled = true
@@ -27,8 +30,19 @@ texture = ExtResource("1_4flbx")
 centered = false
 offset = Vector2(0, -32)
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="item_detector" type="Area2D" parent="."]
+light_mask = 2
+visibility_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="item_detector"]
 position = Vector2(0, 14)
 shape = SubResource("CircleShape2D_4flbx")
+
+[node name="target" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="target"]
+position = Vector2(0, 30)
+shape = SubResource("CircleShape2D_dqkch")
+
+[connection signal="area_shape_entered" from="target" to="." method="_on_target_area_shape_entered"]
+[connection signal="body_entered" from="target" to="." method="_on_target_body_entered"]

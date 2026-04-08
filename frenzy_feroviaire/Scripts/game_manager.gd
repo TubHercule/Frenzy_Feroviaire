@@ -6,7 +6,13 @@ var objects_map : Dictionary = {}
 var cell_obj : Dictionary = {"type": 0, "nb": 0}
 # key = Vector2i (cell)
 # value = Array d’objets présents sur la tile
-@onready var Cell_Obj_Container_Scene = preload("res://scenes/cell_obj_container.tscn")
+@onready var cell_stackable_items_container_scene = preload("res://scenes/cell_stackable_items_container.tscn")
+@onready var cell_tools_container_scene = preload("res://scenes/cell_tools_container.tscn")
+
+const SOURCE_ID = 0 # ID de ton atlas (à adapter)
+const TILE_FOREST = Vector2i(1, 0)
+const TILE_PLAIN = Vector2i(0, 0)
+const TILE_ROCK = Vector2i(0, 1)
 
 var tree_scenes = [
 	preload("res://scenes/tree_1.tscn"),
@@ -17,7 +23,8 @@ var tree_scenes = [
 ]
 
 var stackable_items_scenes = {
-	Types.CarryType.WOOD : preload("res://scenes/wood.tscn")
+	Types.CarryType.WOOD : preload("res://scenes/wood.tscn"),
+	Types.CarryType.AXE : preload("res://scenes/axe.tscn")
 }
 
 # create a cell if cell is not refferenced in objects_map
@@ -27,14 +34,31 @@ var stackable_items_scenes = {
 	else:
 		
 		return Game_Manager.objects_map[cell]"""
-		
+
+
+func instantiate_container(type : Types.CarryType, max_nb : int = -1):
+	var cell_obj_container
+	if Types.is_tool(type):
+		cell_obj_container = cell_tools_container_scene.instantiate()
+		cell_obj_container.init(type, cell_obj_container.can_destroy)
+	else:
+		cell_obj_container = cell_stackable_items_container_scene.instantiate()
+		cell_obj_container.init(type)
+		if max_nb != -1:
+			cell_obj_container.set_max_nb(max_nb)
+	return cell_obj_container
+
+
+func instantiate_cell(cell: Vector2i, type : Types.CarryType) -> void:
+	var cell_obj_container = instantiate_container(type) #: Cell_Obj_Container
+	objects_map[cell] = cell_obj_container
+	cell_obj_container.position = tilemap.map_to_local(cell)
+	objects_container.add_child(cell_obj_container)
+
+
 func add_object(cell: Vector2i, type : Types.CarryType, nb : int) -> int:
 	if not objects_map.has(cell):
-		var Cell_Obj_Container = Cell_Obj_Container_Scene.instantiate()
-		objects_map[cell] = Cell_Obj_Container
-		Cell_Obj_Container.type = type
-		Cell_Obj_Container.position = tilemap.map_to_local(cell)
-		objects_container.add_child(Cell_Obj_Container)
+		instantiate_cell(cell, type)
 	else:
 		if type != objects_map[cell].type:
 			print("ATTENTION : types différents sur la même tuile")
@@ -60,11 +84,7 @@ func remove_object(cell: Vector2i, type : Types.CarryType, nb : int):
 # MAP GENERATION
 #-------------------
 
-var tree_scene = preload("res://scenes/tree_2.tscn")
 
-const SOURCE_ID = 0 # ID de ton atlas (à adapter)
-const TILE_FOREST = Vector2i(1, 0)
-const TILE_PLAIN = Vector2i(0, 0)
 
 func _ready():
 	spawn_all()
@@ -80,6 +100,8 @@ func spawn_all():
 			spawn_tree(cell)
 		if atlas_coords == TILE_PLAIN:
 			add_object(cell, Types.CarryType.WOOD, 2)
+		if atlas_coords == TILE_ROCK:
+			add_object(cell, Types.CarryType.AXE, 1)
 
 """func spawn_item(cell: Vector2i, item_scene_id : Types.CarryType, nb : int):
 	var Stackable_Item = stackable_items_scenes[item_scene_id].instantiate()

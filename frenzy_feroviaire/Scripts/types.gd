@@ -14,3 +14,10 @@ static func is_tool(type : CarryType):
 
 static func is_resource(type : CarryType):
 	return type in [CarryType.WOOD, CarryType.STONE]
+
+enum WorldObjectType {
+	NONE,
+	TREE,
+	ROCK,
+	COAL
+}
