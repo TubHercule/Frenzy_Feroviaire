@@ -1,16 +1,15 @@
-extends Node2D
-class_name Inventory
+using Godot;
+using System;
 
-#var carry_type : Types.CarryType = Types.CarryType.NONE
-#var amount : int = 0
-#var max_amount : int = 5
-@onready var player : CharacterBody2D = $".."
-var cell_obj_container : Cell_Obj_Container 
-var capacity : int = 5
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass
+public partial class Inventory : Node2D
+{
+	// Called when the node enters the scene tree for the first time.
+	public override void _Ready()
+	{
+	}
+	private Player player = (Player)GetParent();
+	private Item item;
+	private int capacity = 5;
 
 func player_full() -> bool:
 	if cell_obj_container != null:
@@ -67,7 +66,7 @@ func get_tool():
 	return null
 """
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+}
