@@ -18,18 +18,35 @@ public partial class Item : Node
 	public override void _Ready()
 	{
 	}
-	public int add(Item item)
+	public Item add(Item item)
 	{
-		int dif = 0;
+		if (item == null)
+			return null;
 		if (item.type != type)
-			throw new ItemTypeException("Cannot add item of different type");
+			throw new ItemTypeException("Cannot add item of different type");	
 		if (nb + item.nb > maxNb){
-			dif = nb + item.nb - maxNb;
+			int dif = nb + item.nb - maxNb;
 			nb = maxNb;
-			return dif;
+			return new Item(type, maxNb, dif);
 		}
 		nb += item.nb;
-		return dif;
+		return null;
+	}
+
+	public Item sub(Item item)
+	{
+		if (item == null)
+			return null;
+		if (item.type != type)
+			throw new ItemTypeException("Cannot add item of different type");
+		nb -= item.nb;
+		if (nb < 0)
+		{
+			int dif = nb;
+			nb = 0;
+			return new Item(type, maxNb, dif);
+		}
+		return null;
 	}
 
 	public int getNb()

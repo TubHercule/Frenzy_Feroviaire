@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 public partial class GameManager : Node2D
 {
@@ -9,10 +10,9 @@ public partial class GameManager : Node2D
 	private TileMap _tilemap;
 	private Node _objectsContainer;
 
-	private Dictionary<Vector2I, Node> objects_map = new();
-
-	private PackedScene cell_stackable_items_container_scene = GD.Load<PackedScene>("res://scenes/cell_stackable_items_container.tscn");
-	private PackedScene cell_tools_container_scene = GD.Load<PackedScene>("res://scenes/cell_tools_container.tscn");
+	private Dictionary<Vector2I, ItemDisplayer> itemsMap = new();
+	private ItemManager itemManager;
+	private PackedScene itemDisplayerScene = GD.Load<PackedScene>("res://scenes/ItemDisplayer.tscn");
 
 	private const int SOURCE_ID = 0;
 	private readonly Vector2I TILE_FOREST = new Vector2I(1, 0);
@@ -35,7 +35,7 @@ public partial class GameManager : Node2D
 		_objectsContainer = GetTree().Root.FindChild("obj_container", true, false);
 
 		spawnAll();
-		GD.Print(objects_map);
+		GD.Print(itemsMap);
 	}
 
 	private Node instantiateContainer(Types.CarryType type, int max_nb = -1)
@@ -62,55 +62,77 @@ public partial class GameManager : Node2D
 		return cell_obj_container;
 	}
 
-	private void instantiateCell(Vector2I cell, Types.CarryType type)
+	private Item instantiateCell(Vector2I cell, Item _item)
 	{
-		Node cell_obj_container = instantiateContainer(type);
+		if (_item == null)
+			return null;
+		
+		ItemDisplayer itemDisplayer = itemDisplayerScene.Instantiate();
+		Item item = itemManager.createItem(_item.getType());
+		Item rest = item.add(_item);
+		itemDisplayer.setItem(item);
+		itemsMap[cell] = 
 
-		objects_map[cell] = cell_obj_container;
-
-		cell_obj_container.Set("position", _tilemap.MapToLocal(cell));
+		itemDisplayer.Set("position", _tilemap.MapToLocal(cell));
 		_objectsContainer.AddChild(cell_obj_container);
 	}
 
-	public int addObject(Vector2I cell, Types.CarryType type, int nb)
+	public Item getItemOfCell(Vector2I cell)
 	{
-		if (!objects_map.ContainsKey(cell))
-		{
-			instantiateCell(cell, type);
-		}
-		else
-		{
-			if ((Types.CarryType)objects_map[cell].Get("type") != type)
-			{
-				GD.Print("ATTENTION : types différents sur la même tuile");
-				return nb;
-			}
-		}
+		if (!itemsMap.ContainsKey(cell))
+			return null;
 
-		int dif = (int)objects_map[cell].Call("add_items", nb);
-		GD.Print("dif : ", dif);
-		return dif;
+		ItemDisplayer itemDisplayer = itemsMap[cell];
+		return itemDisplayer.getItem();
 	}
 
-	public void removeObject(Vector2I cell, Types.CarryType type, int nb)
+	public Item addItemsInCell(Vector2I cell, Item _item)
 	{
-		if (!objects_map.ContainsKey(cell))
+		if (!itemsMap.ContainsKey(cell))
+		{
+			if (_item == null)
+				return null;
+
+			instantiateCell(cell, _item);
+		}
+		Item item = getItemOfCell(cell);
+		Item rest = item.add(_item);
+		return rest;
+	}
+
+	public void subItemInCell(Vector2I cell, Item item)
+	{
+		if (!itemsMap.ContainsKey(cell))
 			return;
 
-		if ((Types.CarryType)objects_map[cell].getType() != type)
+		ItemDisplayer itemDisplayer = itemsMap[cell];
+		int dif = itemDisplayer.subItems(item);
+
+		if ((Types.CarryType)itemsMap[cell].getType() != type)
 		{
 			GD.Print("ATTENTION : types différents sur la même tuile");
 		}
 
 		GD.Print("rm obj");
-		objects_map[cell].Call("add_items", -nb);
+		itemsMap[cell].Call("add_items", -nb);
 
-		if ((int)objects_map[cell].Get("nb") <= 0)
+		if ((int)itemsMap[cell].Get("nb") <= 0)
 		{
-			objects_map[cell].QueueFree();
-			objects_map.Remove(cell);
+			itemsMap[cell].QueueFree();
+			itemsMap.Remove(cell);
 		}
 	}
+	public void setItemInCell(Vector2I cell, Item item)
+	{
+		if (!itemsMap.ContainsKey(cell))
+		{
+			if (item == null)
+				return;
+
+			instantiateCell(cell);
+		}
+
+		itemsMap[cell].Call("set_item", item);
 
 	private void spawnAll()
 	{
@@ -123,10 +145,10 @@ public partial class GameManager : Node2D
 			if (atlasCoords == TILE_FOREST)
 				createDecor(cell, Types.WorldObjectType.TREE);
 
-			if (atlasCoords == TILE_PLAIN)
+			else if (atlasCoords == TILE_PLAIN)
 				addObject(cell, Types.CarryType.WOOD, 2);
 
-			if (atlasCoords == TILE_ROCK)
+			else if (atlasCoords == TILE_ROCK)
 				addObject(cell, Types.CarryType.AXE, 1);
 		}
 	}

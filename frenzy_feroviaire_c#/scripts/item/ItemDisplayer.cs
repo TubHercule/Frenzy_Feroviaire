@@ -15,23 +15,44 @@ public partial class ItemDisplayer : Node2D
 	}
 
 //return the number of items that can't be stacked
-	public int add_items(Item _item)
+	public Item addItems(Item _item)
 	{
 		try
 		{
-			int dif = this.item.add(_item);
+			Item rest = this.item.add(_item);
 			display();
-			return dif;
+			return rest;
 		}
 		catch (ItemTypeException e)
 		{
 			Console.WriteLine(e.Message);
-			return item.getNb();
+			return item;
 		}
-	}	
+	}
+
+	public Item subItems(Item _item)
+	{
+		try
+		{
+			Item rest = item.sub(_item);
+			display();
+			return rest;
+		}
+		catch (ItemTypeException e)
+		{
+			Console.WriteLine(e.Message);
+			return _item;
+		}
+	}
+	public void setItem(Item item)
+	{
+		this.item = item;
+		display();
+	}
+
 	public void display()
 	{
-		PackedScene item_scene = Types.stackableItemsScenes[item.getType()];
+		PackedScene item_scene = Types.itemsScenes[item.getType()];
 		int dif = item.getNb() - displayItemList.Count;
 		int original_size = displayItemList.Count;
 		Console.WriteLine("dif : {0}", dif);
@@ -66,5 +87,10 @@ public partial class ItemDisplayer : Node2D
 				player.tryTake();
 			}
 		}
+	}
+
+	public Item getItem()
+	{
+		return item;
 	}
 }

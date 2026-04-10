@@ -62,13 +62,24 @@ public partial class Player : CharacterBody2D
 	public void tryTake()
 	{
 		Vector2I cell = tilemap.LocalToMap(GlobalPosition);
-		inventory.TakeItems(cell);
+		Item item = GameManager.Instance.getItemOfCell(cell);
+		if (item == null)
+			return;
+
+		Item itemRest = inventory.addItems(item);
+		GameManager.Instance.setItemInCell(cell, itemRest);
+		
 	}
 
 	public void tryDrop()
 	{
 		Vector2I cell = tilemap.LocalToMap(GlobalPosition);
-		inventory.DropItems(cell);
+		Item item = inventory.GetItem();
+		if (item == null)
+			return;
+
+		Item itemRest = GameManager.Instance.subItemInCell(cell, item);
+
 	}
 
 	public Types.CarryType getCarryType()

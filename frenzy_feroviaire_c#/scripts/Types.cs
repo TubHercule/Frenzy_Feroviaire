@@ -36,7 +36,7 @@ public static class Types
 		COAL
 	}
 
-	public static Dictionary<Types.CarryType, PackedScene> stackableItemsScenes = new Dictionary<Types.CarryType, PackedScene>
+	public static Dictionary<Types.CarryType, PackedScene> itemsScenes = new Dictionary<Types.CarryType, PackedScene>
 	{
 		{ Types.CarryType.WOOD, GD.Load<PackedScene>("res://scenes/wood.tscn") },
 		{ Types.CarryType.AXE, GD.Load<PackedScene>("res://scenes/axe.tscn") }
