@@ -20,7 +20,14 @@ public partial class Inventory : Node2D
 			item = ItemManager.instance.createItem(_item.getType());
 			item.setMaxNb(capacity);
 		}
-		return item.add(_item);
+		Item rest = item.add(_item);
+		displayItem();
+		return rest;
+	}
+
+	public void displayItem()
+	{
+		GD.Print("item : ",item.getNb());
 	}
 
 	public Item subItems(Item _item)
@@ -32,6 +39,19 @@ public partial class Inventory : Node2D
 			item = null;
 		}
 		return rest;
+	}
+
+	public void setItem(Item _item)
+	{
+		if (_item == null || _item.isEmpty())
+		{
+			item = null;
+		}
+		else
+		{
+			item = _item;
+		}
+	
 	}
 	public Item getItem()
 	{

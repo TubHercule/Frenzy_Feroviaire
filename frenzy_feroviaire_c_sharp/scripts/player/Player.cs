@@ -40,10 +40,17 @@ public partial class Player : CharacterBody2D
 	{
 		if (Input.IsActionJustPressed("take"))
 		{
+			GD.Print("inv vide ? ",inventory.getItem() == null);
 			if (inventory.is_empty())
+			{
+				GD.Print("take");
 				tryTake();
+			}
 			else
+			{
+				GD.Print("drop");
 				tryDrop();
+			}
 		}
 
 		direction = Input.GetVector("left", "right", "up", "down");
@@ -63,23 +70,37 @@ public partial class Player : CharacterBody2D
 	{
 		Vector2I cell = tilemap.LocalToMap(GlobalPosition);
 		Item item = GameManager.Instance.getItemInCell(cell);
+		
 		if (item == null)
+		{
+			GD.Print("item cell : 0");
 			return;
-
+		}
+		
+		GD.Print("item cell : ",item.getNb());
 		Item itemRest = inventory.addItems(item);
 		GameManager.Instance.setItemInCell(cell, itemRest);
 		
 	}
+	
 
 	public void tryDrop()
 	{
 		Vector2I cell = tilemap.LocalToMap(GlobalPosition);
 		Item item = inventory.getItem();
 		if (item == null)
+		{
+			GD.Print("item inv : 0");
 			return;
+		}
 
-		Item itemRest = GameManager.Instance.subItemInCell(cell, item);
-
+		GD.Print("item inv : ",item.getNb());
+		Item itemRest = GameManager.Instance.addItemsInCell(cell, item);
+		inventory.setItem(itemRest);
+		if (inventory.getItem() != null)
+			GD.Print("item inv : ",inventory.getItem().getNb());
+		else
+			GD.Print("item inv : 0");
 	}
 
 	public Types.CarryType getCarryType()
@@ -115,7 +136,7 @@ public partial class Player : CharacterBody2D
 		{
 			GD.Print("I have a tool");
 
-			if (body.GetParent().HasMethod("take_damage"))
+			if (body.GetParent() != null && body.GetParent().HasMethod("take_damage"))
 			{
 				GD.Print("I have a target");
 

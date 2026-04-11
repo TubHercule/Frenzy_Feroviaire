@@ -7,11 +7,14 @@ public partial class ItemDisplayer : Node2D
 	private Item item;
 	private int stack_gap = 2;
 	private List<Node2D> displayItemList = [];
+	private Area2D detector;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		YSortEnabled = true;
+		detector = GetNode<Area2D>("Area2D");
+		detector.BodyEntered += OnTargetBodyEntered;
 	}
 
 //return the number of items that can't be stacked
@@ -26,7 +29,7 @@ public partial class ItemDisplayer : Node2D
 		catch (ItemTypeException e)
 		{
 			Console.WriteLine(e.Message);
-			return item;
+			return _item;
 		}
 	}
 
@@ -34,16 +37,12 @@ public partial class ItemDisplayer : Node2D
 	{
 		try
 		{
+			if (item == null){
+				return _item;
+			}
 			Item rest = item.sub(_item);
-			if (item.isNeutral()){
-				return rest;
-			}
-			else
-			{
-				display();
-				return rest;
-			}
-			
+			display();
+			return rest;
 		}
 		catch (ItemTypeException e)
 		{
@@ -89,9 +88,12 @@ public partial class ItemDisplayer : Node2D
 		}
 	}
 
-	public void detect_entity(Area2D area){
+	public void OnTargetBodyEntered(Node2D body){
+		detect_entity(body);
+	}
+	public void detect_entity(Node2D body){
 		Console.Write("detected");
-		Node entity = area.GetParent();
+		Node entity = body.GetParent();
 		if (entity.IsInGroup("players")){
 			Player player = (Player)entity;
 			if (player.getCarryType() == item.getType())

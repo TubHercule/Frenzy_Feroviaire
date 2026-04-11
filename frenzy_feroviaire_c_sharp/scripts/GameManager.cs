@@ -101,15 +101,32 @@ public partial class GameManager : Node2D
 
 	public Item addItemsInCell(Vector2I cell, Item _item)
 	{
+		Item rest;
 		if (!itemsMap.ContainsKey(cell))
 		{
 			if (_item == null)
 				return null;
-
-			instantiateCell(cell, _item);
+			
+			rest = instantiateCell(cell, _item);
+			if (rest == null)
+			{
+				GD.Print("item rest : 0");
+			}else{
+				GD.Print("item rest : ",rest.getNb());
+			}
+			
+			return rest;
 		}
-		Item item = getItemInCell(cell);
-		Item rest = item.add(_item);
+		ItemDisplayer itemDisplayer = itemsMap[cell];
+		rest = itemDisplayer.addItems(_item);
+		if (rest == null)
+		{
+			GD.Print("item rest : 0");
+		}
+		else
+		{
+			GD.Print("item rest : ",rest.getNb());
+		}
 		return rest;
 	}
 
@@ -120,7 +137,18 @@ public partial class GameManager : Node2D
 
 		ItemDisplayer itemDisplayer = itemsMap[cell];
 		Item rest = itemDisplayer.subItems(item);
+		if (rest == null){
+			removeCellFromMap(cell);
+		}
 		return rest;
+	}
+
+	public void removeCellFromMap(Vector2I cell){
+		if (itemsMap.ContainsKey(cell))
+		{
+			itemsMap[cell].QueueFree();
+			itemsMap.Remove(cell);
+		}
 	}
 	public void setItemInCell(Vector2I cell, Item _item)
 	{
@@ -133,8 +161,7 @@ public partial class GameManager : Node2D
 		}
 
 		if (_item == null){
-			itemsMap[cell].QueueFree();
-			itemsMap.Remove(cell);
+			removeCellFromMap(cell);
 		}
 		else
 			itemsMap[cell].setItem(_item);
@@ -154,10 +181,11 @@ public partial class GameManager : Node2D
 				Item item = ItemManager.instance.createItem(Types.CarryType.WOOD,2);
 				setItemInCell(cell, item);
 			}
-			else if (atlasCoords == TILE_ROCK){
+
+			/*else if (atlasCoords == TILE_ROCK){
 				Item item = ItemManager.instance.createItem(Types.CarryType.AXE,1);
 				setItemInCell(cell, item);
-			}
+			}*/
 		}
 	}
 

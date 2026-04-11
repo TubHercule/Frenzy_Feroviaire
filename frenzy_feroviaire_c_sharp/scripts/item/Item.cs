@@ -7,7 +7,6 @@ public partial class Item : Node
 	private int nb = 0;
 	private int maxNb;
 
-	private bool isEmpty = false;
 	//public Item(int nb){this.nb = nb;}
 
 	public Item(Types.CarryType type, int maxStack, int nb = 0)
@@ -16,10 +15,7 @@ public partial class Item : Node
 		this.maxNb = maxStack;
 		this.nb = nb;
 	}
-	public Item(bool isEmpty)
-	{
-		this.isEmpty = isEmpty;
-	}
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -50,14 +46,13 @@ public partial class Item : Node
 		{
 			int dif = nb;
 			nb = 0;
-			return new Item(type, maxNb, dif);
 		}
 		return null;
 	}
 
-	public bool isNeutral()
+	public bool isEmpty()
 	{
-		return isEmpty;
+		return nb == 0;
 	}
 	public int getNb()
 	{
