@@ -22,7 +22,7 @@ public partial class Decor : Node2D
 		health -= damage;
 		if (health <= 0)
 		{
-			GameManager.Instance.addObject(cell, dropped_item_type, 1);
+			GameManager.Instance.addItemsInCell(cell, ItemManager.instance.createItem(dropped_item_type,1));
 			QueueFree();
 		}
 	}

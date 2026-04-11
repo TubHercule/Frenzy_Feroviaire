@@ -8,10 +8,10 @@ public partial class Tool : Item
 	public List<Types.WorldObjectType> canDestroy = new List<Types.WorldObjectType>();
 	int damage;
 	public Tool(Types.CarryType type, List<Types.WorldObjectType> canDestroy, int damage, int maxStack = 1, int nb = 0) : base(type, maxStack, nb)
-    {
+	{
 		this.canDestroy = canDestroy;
 		this.damage = damage;
-    }
+	}
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{

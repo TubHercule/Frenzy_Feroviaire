@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://b225s0d0n6mil"]
 
 [ext_resource type="Texture2D" uid="uid://uyfkcwswiqwo" path="res://basic_tile_sheet.png" id="1_1kc1q"]
+[ext_resource type="PackedScene" uid="uid://b31evla4grfjv" path="res://scenes/game_manager.tscn" id="1_4msxo"]
+[ext_resource type="PackedScene" uid="uid://d1qdcp8qj27js" path="res://scenes/item_manager.tscn" id="1_5fb3c"]
 [ext_resource type="PackedScene" uid="uid://b6qb1cet76kn1" path="res://scenes/player.tscn" id="2_4msxo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nxogm"]
@@ -18,6 +20,10 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_nxogm")
 
 [node name="Scene" type="Node2D" unique_id=2079250823]
+
+[node name="ItemManager" parent="." unique_id=1631447396 instance=ExtResource("1_5fb3c")]
+
+[node name="GameManager" parent="." unique_id=898635923 instance=ExtResource("1_4msxo")]
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1559032211]
 zoom = Vector2(2, 2)

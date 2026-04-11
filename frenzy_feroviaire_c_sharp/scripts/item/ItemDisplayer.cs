@@ -35,8 +35,15 @@ public partial class ItemDisplayer : Node2D
 		try
 		{
 			Item rest = item.sub(_item);
-			display();
-			return rest;
+			if (item.isNeutral()){
+				return rest;
+			}
+			else
+			{
+				display();
+				return rest;
+			}
+			
 		}
 		catch (ItemTypeException e)
 		{
@@ -52,6 +59,11 @@ public partial class ItemDisplayer : Node2D
 
 	public void display()
 	{
+		if (item == null)
+		{
+			GD.PrintErr("ItemDisplayer.display() : item est null.");
+			return;
+		}
 		PackedScene item_scene = Types.itemsScenes[item.getType()];
 		int dif = item.getNb() - displayItemList.Count;
 		int original_size = displayItemList.Count;

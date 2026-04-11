@@ -18,7 +18,7 @@ public partial class Player : CharacterBody2D
 	private dynamic tool;
 
 	private Timer timer;
-	private Node2D target;
+	private Area2D target;
 
 	public override void _Ready()
 	{
@@ -26,7 +26,7 @@ public partial class Player : CharacterBody2D
 
 		tilemap = GetNode<TileMap>("../../TileMap");
 		timer = GetNode<Timer>("Timer");
-		target = GetNode<Node2D>("target");
+		target = GetNode<Area2D>("target");
 
 		// 🔔 Connexion du signal Timer
 		timer.Timeout += OnTimerTimeout;
@@ -40,10 +40,10 @@ public partial class Player : CharacterBody2D
 	{
 		if (Input.IsActionJustPressed("take"))
 		{
-			if (GetCarryType() == Types.CarryType.NONE)
-				TryTake();
+			if (inventory.is_empty())
+				tryTake();
 			else
-				TryDrop();
+				tryDrop();
 		}
 
 		direction = Input.GetVector("left", "right", "up", "down");
@@ -62,7 +62,7 @@ public partial class Player : CharacterBody2D
 	public void tryTake()
 	{
 		Vector2I cell = tilemap.LocalToMap(GlobalPosition);
-		Item item = GameManager.Instance.getItemOfCell(cell);
+		Item item = GameManager.Instance.getItemInCell(cell);
 		if (item == null)
 			return;
 
@@ -74,7 +74,7 @@ public partial class Player : CharacterBody2D
 	public void tryDrop()
 	{
 		Vector2I cell = tilemap.LocalToMap(GlobalPosition);
-		Item item = inventory.GetItem();
+		Item item = inventory.getItem();
 		if (item == null)
 			return;
 
@@ -84,8 +84,8 @@ public partial class Player : CharacterBody2D
 
 	public Types.CarryType getCarryType()
 	{
-		if (inventory.cell_obj_container != null)
-			return inventory.cell_obj_container.type;
+		if (inventory.getItem() != null)
+			return inventory.getItem().getType();
 
 		return Types.CarryType.NONE;
 	}

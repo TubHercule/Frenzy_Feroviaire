@@ -22,5 +22,3 @@ enum WorldObjectType {
 	ROCK,
 	COAL
 }
-
-

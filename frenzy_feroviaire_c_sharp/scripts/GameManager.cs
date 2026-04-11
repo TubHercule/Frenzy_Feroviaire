@@ -11,7 +11,7 @@ public partial class GameManager : Node2D
 	private Node _objectsContainer;
 
 	private Dictionary<Vector2I, ItemDisplayer> itemsMap = new();
-	private ItemManager itemManager;
+
 	private PackedScene itemDisplayerScene = GD.Load<PackedScene>("res://scenes/ItemDisplayer.tscn");
 
 	private const int SOURCE_ID = 0;
@@ -21,11 +21,11 @@ public partial class GameManager : Node2D
 
 	private PackedScene[] tree_scenes =
 	{
-		GD.Load<PackedScene>("res://scenes/tree_1.tscn"),
+		GD.Load<PackedScene>("res://scenes/tree_6.tscn")/*,
 		GD.Load<PackedScene>("res://scenes/tree_2.tscn"),
 		GD.Load<PackedScene>("res://scenes/tree_3.tscn"),
 		GD.Load<PackedScene>("res://scenes/tree_4.tscn"),
-		GD.Load<PackedScene>("res://scenes/tree_5.tscn")
+		GD.Load<PackedScene>("res://scenes/tree_5.tscn")*/
 	};
 
 	public override void _Ready()
@@ -34,11 +34,23 @@ public partial class GameManager : Node2D
 		_tilemap = GetTree().Root.FindChild("TileMap", true, false) as TileMap;
 		_objectsContainer = GetTree().Root.FindChild("obj_container", true, false);
 
+		if (_tilemap == null || _objectsContainer == null)
+		{
+			GD.PrintErr("_tilemap ou _objectsContainer est null. Vérifiez les noms de noeuds dans la scène.");
+			return;
+		}
+
+		if (ItemManager.instance == null)
+		{
+			GD.PrintErr("ItemManager.instance est null : vérifiez que le noeud ItemManager existe et qu'il est présent dans la scène.");
+			return;
+		}
+
 		spawnAll();
 		GD.Print(itemsMap);
 	}
 
-	private Node instantiateContainer(Types.CarryType type, int max_nb = -1)
+	/*private Node instantiateContainer(Types.CarryType type, int max_nb = -1)
 	{
 		Node cell_obj_container;
 
@@ -60,24 +72,25 @@ public partial class GameManager : Node2D
 		}
 
 		return cell_obj_container;
-	}
+	}*/
 
 	private Item instantiateCell(Vector2I cell, Item _item)
 	{
 		if (_item == null)
 			return null;
 		
-		ItemDisplayer itemDisplayer = itemDisplayerScene.Instantiate();
-		Item item = itemManager.createItem(_item.getType());
+		ItemDisplayer itemDisplayer = (ItemDisplayer)itemDisplayerScene.Instantiate();
+		Item item = ItemManager.instance.createItem(_item.getType());
 		Item rest = item.add(_item);
 		itemDisplayer.setItem(item);
-		itemsMap[cell] = 
+		itemsMap[cell] = itemDisplayer;
 
 		itemDisplayer.Set("position", _tilemap.MapToLocal(cell));
-		_objectsContainer.AddChild(cell_obj_container);
+		_objectsContainer.AddChild(itemDisplayer);
+		return rest;
 	}
 
-	public Item getItemOfCell(Vector2I cell)
+	public Item getItemInCell(Vector2I cell)
 	{
 		if (!itemsMap.ContainsKey(cell))
 			return null;
@@ -95,45 +108,37 @@ public partial class GameManager : Node2D
 
 			instantiateCell(cell, _item);
 		}
-		Item item = getItemOfCell(cell);
+		Item item = getItemInCell(cell);
 		Item rest = item.add(_item);
 		return rest;
 	}
 
-	public void subItemInCell(Vector2I cell, Item item)
+	public Item subItemInCell(Vector2I cell, Item item)
 	{
 		if (!itemsMap.ContainsKey(cell))
-			return;
+			return item;
 
 		ItemDisplayer itemDisplayer = itemsMap[cell];
-		int dif = itemDisplayer.subItems(item);
-
-		if ((Types.CarryType)itemsMap[cell].getType() != type)
+		Item rest = itemDisplayer.subItems(item);
+		return rest;
+	}
+	public void setItemInCell(Vector2I cell, Item _item)
+	{
+		if (!itemsMap.ContainsKey(cell))
 		{
-			GD.Print("ATTENTION : types différents sur la même tuile");
+			if (_item == null)
+				return;
+
+			instantiateCell(cell, _item);
 		}
 
-		GD.Print("rm obj");
-		itemsMap[cell].Call("add_items", -nb);
-
-		if ((int)itemsMap[cell].Get("nb") <= 0)
-		{
+		if (_item == null){
 			itemsMap[cell].QueueFree();
 			itemsMap.Remove(cell);
 		}
+		else
+			itemsMap[cell].setItem(_item);
 	}
-	public void setItemInCell(Vector2I cell, Item item)
-	{
-		if (!itemsMap.ContainsKey(cell))
-		{
-			if (item == null)
-				return;
-
-			instantiateCell(cell);
-		}
-
-		itemsMap[cell].Call("set_item", item);
-
 	private void spawnAll()
 	{
 		var usedCells = _tilemap.GetUsedCells(0);
@@ -145,11 +150,14 @@ public partial class GameManager : Node2D
 			if (atlasCoords == TILE_FOREST)
 				createDecor(cell, Types.WorldObjectType.TREE);
 
-			else if (atlasCoords == TILE_PLAIN)
-				addObject(cell, Types.CarryType.WOOD, 2);
-
-			else if (atlasCoords == TILE_ROCK)
-				addObject(cell, Types.CarryType.AXE, 1);
+			else if (atlasCoords == TILE_PLAIN){
+				Item item = ItemManager.instance.createItem(Types.CarryType.WOOD,2);
+				setItemInCell(cell, item);
+			}
+			else if (atlasCoords == TILE_ROCK){
+				Item item = ItemManager.instance.createItem(Types.CarryType.AXE,1);
+				setItemInCell(cell, item);
+			}
 		}
 	}
 

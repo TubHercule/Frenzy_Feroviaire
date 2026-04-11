@@ -3,16 +3,23 @@ using System;
 
 public partial class Inventory : Node2D
 {
+	
+	private Player player; 
+	private Item item;
+	private int capacity = 5;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		player = (Player)this.GetParent();
 	}
-	private Player player = (Player)GetParent();
-	private Item item;
-	private int capacity = 5;
 
 	public Item addItems(Item _item)
 	{
+		if (item == null)
+		{
+			item = ItemManager.instance.createItem(_item.getType());
+			item.setMaxNb(capacity);
+		}
 		return item.add(_item);
 	}
 
@@ -26,9 +33,13 @@ public partial class Inventory : Node2D
 		}
 		return rest;
 	}
-	public Item GetItem()
+	public Item getItem()
 	{
 		return item;
+	}
+	public bool is_empty()
+	{
+		return item == null;
 	}
 
 }

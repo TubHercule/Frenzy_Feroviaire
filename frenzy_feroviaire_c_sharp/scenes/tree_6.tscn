@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cx1r8aaahdgsg"]
+
+[ext_resource type="Script" uid="uid://c7uisao5meqa3" path="res://scripts/decor/Decor.cs" id="1_7dbjc"]
+[ext_resource type="Texture2D" uid="uid://t0v3pkvo6bxk" path="res://Arbre1.png" id="2_2jibu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vstrf"]
+size = Vector2(25, 24)
+
+[node name="Tree_6" type="Node2D" unique_id=1841065901]
+script = ExtResource("1_7dbjc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2116843442]
+position = Vector2(0, 1)
+texture = ExtResource("2_2jibu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=917231204]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=564845186]
+position = Vector2(0, 15)
+shape = SubResource("RectangleShape2D_vstrf")

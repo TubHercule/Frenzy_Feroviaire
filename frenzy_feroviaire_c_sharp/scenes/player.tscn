@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b6qb1cet76kn1"]
 
 [ext_resource type="Texture2D" uid="uid://ddjexd67r8bpq" path="res://random_character.png" id="1_4flbx"]
-[ext_resource type="Script" uid="uid://bjd4gl4xlcosn" path="res://scripts/player.gd" id="2_onrkg"]
+[ext_resource type="Script" uid="uid://cpakysg0sfmrj" path="res://scripts/player/Player.cs" id="1_qlg0r"]
 [ext_resource type="PackedScene" uid="uid://caemyyj5dpqpa" path="res://scenes/inventory.tscn" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://btb7hqfsae854" path="res://scenes/displayed_inventory.tscn" id="4_dqkch"]
 [ext_resource type="Texture2D" uid="uid://bmrc5hgl5y1kq" path="res://icon.svg" id="5_qlg0r"]
@@ -14,7 +14,7 @@ radius = 1.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1735882044 node_paths=PackedStringArray("inventory")]
 y_sort_enabled = true
-script = ExtResource("2_onrkg")
+script = ExtResource("1_qlg0r")
 inventory = NodePath("Inventory")
 
 [node name="Inventory" parent="." unique_id=2104935161 instance=ExtResource("3_qhqgy")]

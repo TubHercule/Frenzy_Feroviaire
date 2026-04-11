@@ -6,6 +6,8 @@ public partial class Item : Node
 	private Types.CarryType type;
 	private int nb = 0;
 	private int maxNb;
+
+	private bool isEmpty = false;
 	//public Item(int nb){this.nb = nb;}
 
 	public Item(Types.CarryType type, int maxStack, int nb = 0)
@@ -14,22 +16,26 @@ public partial class Item : Node
 		this.maxNb = maxStack;
 		this.nb = nb;
 	}
+	public Item(bool isEmpty)
+	{
+		this.isEmpty = isEmpty;
+	}
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 	}
-	public Item add(Item _item)
+	public Item add(Item item)
 	{
-		if (_item == null)
+		if (item == null)
 			return null;
-		if (_item.type != type)
+		if (item.type != type)
 			throw new ItemTypeException("Cannot add item of different type");	
-		if (nb + _item.nb > maxNb){
-			int dif = nb + _item.nb - maxNb;
+		if (nb + item.nb > maxNb){
+			int dif = nb + item.nb - maxNb;
 			nb = maxNb;
 			return new Item(type, maxNb, dif);
 		}
-		nb += _item.nb;
+		nb += item.nb;
 		return null;
 	}
 
@@ -49,6 +55,10 @@ public partial class Item : Node
 		return null;
 	}
 
+	public bool isNeutral()
+	{
+		return isEmpty;
+	}
 	public int getNb()
 	{
 		return nb;

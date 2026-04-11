@@ -19,11 +19,6 @@ run/main_scene="res://scenes/scene.tscn"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-Game_Manager="*res://scripts/game_manager.gd"
-Types="*res://scripts/types.gd"
-
 [dotnet]
 
 project/assembly_name="Frenzy_Feroviaire_C#"

@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bwbx2dmscmnvq"]
+
+[ext_resource type="Script" path="res://scripts/chopable_tree.gd" id="1_khuns"]
+[ext_resource type="Texture2D" uid="uid://cgr3xl1v8s048" path="res://Arbre4.png" id="2_khuns"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l7t2s"]
+size = Vector2(25, 24)
+
+[node name="Tree_4" type="Node2D" unique_id=56923863]
+script = ExtResource("1_khuns")
+metadata/_custom_type_script = "uid://c4tbav0dytoga"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1135738863]
+position = Vector2(0, 1)
+texture = ExtResource("2_khuns")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1968495870]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1852331079]
+position = Vector2(0, 29)
+shape = SubResource("RectangleShape2D_l7t2s")
